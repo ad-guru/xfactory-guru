@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cricket Stats — Tendulkar vs Kohli</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">&#127951;</span>
+      <h1>Cricket Stats</h1>
+    </div>
+    <p class="subtitle">Sachin Tendulkar vs Virat Kohli — Career Comparison</p>
+    <div class="data-badge" id="dataBadge">Loading…</div>
+  </div>
+</header>
+
+<!-- Main content -->
+<main class="main">
+
+  <!-- Section 1: Player Career Overview Cards (f1) -->
+  <section class="section" id="overviewSection">
+    <h2 class="section-title">Career Overview</h2>
+    <div class="cards-row" id="overviewCards"></div>
+  </section>
+
+  <!-- Section 2: Format-Wise Breakdown (f2) -->
+  <section class="section" id="formatSection">
+    <h2 class="section-title">Format-Wise Breakdown</h2>
+    <div class="format-tabs">
+      <button class="tab active" data-format="test">Test</button>
+      <button class="tab" data-format="odi">ODI</button>
+      <button class="tab" data-format="t20i">T20I</button>
+    </div>
+    <div class="format-tables" id="formatTables"></div>
+  </section>
+
+  <!-- Section 3: Side-by-Side Comparison (f3) -->
+  <section class="section" id="comparisonSection">
+    <h2 class="section-title">Side-by-Side Comparison</h2>
+    <div class="comparison-format-tabs">
+      <button class="comp-tab active" data-format="test">Test</button>
+      <button class="comp-tab" data-format="odi">ODI</button>
+      <button class="comp-tab" data-format="t20i">T20I</button>
+      <button class="comp-tab" data-format="overall">Overall</button>
+    </div>
+    <div id="comparisonBars"></div>
+  </section>
+
+  <!-- Section 4: Centuries & Milestones (f4) -->
+  <section class="section" id="milestonesSection">
+    <h2 class="section-title">Centuries &amp; Milestones</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <canvas id="centuriesChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <canvas id="halfCenturiesChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box single">
+        <canvas id="doubleCenturiesChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Batting Average & Strike Rate Charts (f5) -->
+  <section class="section" id="chartsSection">
+    <h2 class="section-title">Batting Average &amp; Strike Rate</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <canvas id="averageChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <canvas id="strikeRateChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Data sourced with static fallback. Stats as of June 2024. Built with Chart.js.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
