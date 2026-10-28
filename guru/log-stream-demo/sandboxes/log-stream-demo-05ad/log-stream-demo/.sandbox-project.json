@@ -1,0 +1,9 @@
+{
+  "name": "log-stream-demo",
+  "type": "app",
+  "start_command": ["sh", "-c", "exec node server.js"],
+  "auto_restart": true,
+  "env": {
+    "PORT": "3000"
+  }
+}

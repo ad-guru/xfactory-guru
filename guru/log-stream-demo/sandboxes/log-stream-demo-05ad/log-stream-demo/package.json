@@ -1,0 +1,10 @@
+{
+  "name": "log-stream-demo",
+  "version": "1.1.0",
+  "description": "Tiny Node.js HTTP server with GET /time endpoint",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  }
+}
