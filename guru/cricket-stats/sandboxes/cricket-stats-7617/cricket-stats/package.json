@@ -1,0 +1,13 @@
+{
+  "name": "cricket-stats",
+  "version": "1.0.0",
+  "description": "Cricket career stats comparison dashboard for Sachin Tendulkar and Virat Kohli",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"no test suite\" && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

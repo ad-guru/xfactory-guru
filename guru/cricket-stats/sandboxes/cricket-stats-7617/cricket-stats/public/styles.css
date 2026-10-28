@@ -1,0 +1,279 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-raised: #1c2129;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --sachin: #f0883e;
+  --sachin-light: #ffa657;
+  --kohli: #58a6ff;
+  --kohli-light: #79c0ff;
+  --accent: #7ee787;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+
+body {
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.header {
+  background: linear-gradient(135deg, #1a1e2e 0%, #0d1117 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 1.5rem 1.5rem;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.logo-icon { font-size: 1.8rem; }
+.logo h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+}
+.data-badge {
+  display: inline-block;
+  margin-top: 0.7rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(126,231,135,.15);
+  color: var(--accent);
+  border: 1px solid rgba(126,231,135,.25);
+}
+
+/* ===== Main ===== */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* ===== Sections ===== */
+.section { margin-bottom: 3rem; }
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+  letter-spacing: -0.01em;
+}
+
+/* ===== Overview Cards (f1) ===== */
+.cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.player-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.player-card.sachin { border-top: 3px solid var(--sachin); }
+.player-card.kohli  { border-top: 3px solid var(--kohli); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.card-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  background: var(--surface-raised);
+}
+.card-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.card-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+.stat-item {
+  text-align: center;
+  padding: 0.6rem 0.3rem;
+  background: var(--surface-raised);
+  border-radius: 8px;
+}
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.15rem;
+}
+
+/* ===== Format tabs (f2) ===== */
+.format-tabs, .comparison-format-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.tab, .comp-tab {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.tab:hover, .comp-tab:hover { background: var(--surface-raised); color: var(--text); }
+.tab.active, .comp-tab.active {
+  background: var(--kohli);
+  color: #fff;
+  border-color: var(--kohli);
+}
+
+/* ===== Format Tables (f2) ===== */
+.format-table-wrapper {
+  display: none;
+  overflow-x: auto;
+}
+.format-table-wrapper.active { display: block; }
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.stats-table th, .stats-table td {
+  padding: 0.65rem 0.9rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+.stats-table th {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  background: var(--surface-raised);
+  position: sticky;
+  top: 0;
+}
+.stats-table th:first-child, .stats-table td:first-child { text-align: left; }
+.stats-table tr:hover td { background: rgba(88,166,255,.06); }
+.stats-table .player-name-cell { font-weight: 600; }
+.sachin-row .player-name-cell { color: var(--sachin-light); }
+.kohli-row .player-name-cell { color: var(--kohli-light); }
+.leader-cell { color: var(--accent); font-weight: 700; }
+
+/* ===== Comparison Bars (f3) ===== */
+.comparison-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  gap: 0.8rem;
+}
+.comp-label {
+  width: 120px;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.comp-bars-container {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.comp-bar {
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  min-width: 40px;
+  transition: width 0.5s ease;
+}
+.comp-bar.sachin { background: var(--sachin); justify-content: flex-end; }
+.comp-bar.kohli  { background: var(--kohli); justify-content: flex-start; }
+.comp-bar.leader { box-shadow: 0 0 8px rgba(126,231,135,.4); }
+.comp-vs { font-size: 0.7rem; color: var(--text-muted); flex-shrink: 0; }
+
+/* ===== Charts (f4, f5) ===== */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.chart-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  box-shadow: var(--shadow);
+}
+.chart-box.single {
+  grid-column: 1 / -1;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cards-row { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-row { grid-template-columns: 1fr; }
+  .comparison-row { flex-wrap: wrap; }
+  .comp-label { width: 100%; text-align: left; }
+}
