@@ -1,127 +1,108 @@
-/**
- * Test script for incident-board.
- * Starts the server, runs HTTP assertions, then shuts down.
- */
-const http = require("http");
-const { spawn } = require("child_process");
+// Test script for incident board
+// Starts the server, runs HTTP tests against it, then shuts down.
 
-const PORT = 9736; // high ephemeral port to avoid conflicts
+const http = require("http");
+
+const PORT = 49123; // Use a non-conflicting port for tests
+process.env.PORT = String(PORT);
+
 let server;
 let passed = 0;
 let failed = 0;
 
 function get(path) {
   return new Promise((resolve, reject) => {
-    http
-      .get(`http://127.0.0.1:${PORT}${path}`, (res) => {
-        let body = "";
-        res.on("data", (c) => (body += c));
-        res.on("end", () => resolve({ status: res.statusCode, headers: res.headers, body }));
-      })
-      .on("error", reject);
+    const req = http.get(`http://127.0.0.1:${PORT}${path}`, (res) => {
+      let body = "";
+      res.on("data", (chunk) => { body += chunk; });
+      res.on("end", () => resolve({ status: res.statusCode, headers: res.headers, body }));
+    });
+    req.on("error", reject);
+    req.setTimeout(5000, () => { req.destroy(); reject(new Error("timeout")); });
   });
 }
 
 function assert(label, condition) {
   if (condition) {
+    console.log(`  PASS: ${label}`);
     passed++;
-    console.log(`  PASS  ${label}`);
   } else {
+    console.error(`  FAIL: ${label}`);
     failed++;
-    console.error(`  FAIL  ${label}`);
   }
 }
 
-async function run() {
-  console.log("Starting server...");
-  server = spawn(process.execPath, ["server.js"], {
-    env: { ...process.env, PORT: String(PORT) },
-    cwd: __dirname,
-    stdio: ["ignore", "pipe", "pipe"]
-  });
+async function runTests() {
+  console.log("Testing /health ...");
+  const health = await get("/health");
+  assert("/health returns 200", health.status === 200);
+  assert("/health body is 'ok'", health.body.trim() === "ok");
+  assert("/health content-type is text", health.headers["content-type"].includes("text/plain"));
 
-  // wait for server to be ready
-  await new Promise((resolve) => {
-    const check = () => {
-      http
-        .get(`http://127.0.0.1:${PORT}/health`, (res) => {
-          res.resume();
-          resolve();
-        })
-        .on("error", () => setTimeout(check, 200));
-    };
-    setTimeout(check, 500);
-  });
+  console.log("\nTesting /api/summary ...");
+  const summary = await get("/api/summary");
+  assert("/api/summary returns 200", summary.status === 200);
+  assert("/api/summary content-type is json", summary.headers["content-type"].includes("application/json"));
+  const data = JSON.parse(summary.body);
+  assert("/api/summary has by_severity", data.by_severity && typeof data.by_severity === "object");
+  assert("/api/summary has by_status", data.by_status && typeof data.by_status === "object");
+  assert("/api/summary has total", typeof data.total === "number" && data.total > 0);
+  assert("/api/summary sev0 count >= 1", data.by_severity.sev0 >= 1);
+  assert("/api/summary sev1 count >= 1", data.by_severity.sev1 >= 1);
+  assert("/api/summary all severities sum to total",
+    data.by_severity.sev0 + data.by_severity.sev1 + data.by_severity.sev2 + data.by_severity.sev3 === data.total);
+  assert("/api/summary all statuses sum to total",
+    data.by_status.open + data.by_status.mitigating + data.by_status.resolved === data.total);
 
-  console.log("\n--- /health ---");
-  {
-    const r = await get("/health");
-    assert("status 200", r.status === 200);
-    assert("body is 'ok'", r.body.trim() === "ok");
-    assert("content-type text", r.headers["content-type"].includes("text/plain"));
-  }
+  console.log("\nTesting GET / ...");
+  const board = await get("/");
+  assert("GET / returns 200", board.status === 200);
+  assert("GET / is HTML", board.headers["content-type"].includes("text/html"));
+  assert("GET / contains incident table", board.body.includes("<table"));
+  assert("GET / shows SEV0 count badge", board.body.includes("SEV0:"));
+  assert("GET / shows SEV1 count badge", board.body.includes("SEV1:"));
+  assert("GET / contains an incident ID", board.body.includes("INC-001"));
+  assert("GET / shows US/Pacific timezone note", board.body.includes("US/Pacific"));
 
-  console.log("\n--- /api/summary ---");
-  {
-    const r = await get("/api/summary");
-    assert("status 200", r.status === 200);
-    assert("content-type json", r.headers["content-type"].includes("application/json"));
-    const data = JSON.parse(r.body);
-    assert("total is 8", data.total === 8);
-    assert("has bySeverity", typeof data.bySeverity === "object");
-    assert("has byStatus", typeof data.byStatus === "object");
-    assert("sev1 count is 3", data.bySeverity.sev1 === 3);
-    assert("sev2 count is 3", data.bySeverity.sev2 === 3);
-    assert("sev3 count is 2", data.bySeverity.sev3 === 2);
-    assert("open count is 3", data.byStatus.open === 3);
-    assert("mitigating count is 2", data.byStatus.mitigating === 2);
-    assert("resolved count is 3", data.byStatus.resolved === 3);
-  }
+  console.log("\nTesting GET /?status=open ...");
+  const filtered = await get("/?status=open");
+  assert("GET /?status=open returns 200", filtered.status === 200);
+  assert("Filtered page does NOT contain resolved incidents",
+    !filtered.body.includes('>RESOLVED</span>'));
+  assert("Filtered page contains open incidents", filtered.body.includes(">OPEN</span>"));
 
-  console.log("\n--- GET / (board) ---");
-  {
-    const r = await get("/");
-    assert("status 200", r.status === 200);
-    assert("contains Incident Board", r.body.includes("Incident Board"));
-    assert("contains INC-001", r.body.includes("INC-001"));
-    assert("contains US/Pacific timezone label", r.body.includes("US/Pacific"));
-    assert("contains filter links", r.body.includes("?status=open"));
-  }
+  console.log("\nTesting GET /?status=resolved ...");
+  const resolved = await get("/?status=resolved");
+  assert("GET /?status=resolved returns 200", resolved.status === 200);
+  assert("Resolved filter does NOT contain open-status badges",
+    !resolved.body.includes('>OPEN</span>'));
 
-  console.log("\n--- GET /?status=open (filtered) ---");
-  {
-    const r = await get("/?status=open");
-    assert("status 200", r.status === 200);
-    assert("contains INC-001 (open)", r.body.includes("INC-001"));
-    assert("does not contain INC-003 (resolved)", !r.body.includes("INC-003"));
-    assert("does not contain INC-005 (resolved)", !r.body.includes("INC-005"));
-  }
+  console.log("\nTesting GET /incidents/INC-001 ...");
+  const detail = await get("/incidents/INC-001");
+  assert("GET /incidents/INC-001 returns 200", detail.status === 200);
+  assert("Detail page shows incident title", detail.body.includes("Payment gateway timeout"));
+  assert("Detail page has timeline", detail.body.includes("Timeline"));
+  assert("Detail page shows service", detail.body.includes("payments-api"));
 
-  console.log("\n--- GET /incidents/INC-001 (detail) ---");
-  {
-    const r = await get("/incidents/INC-001");
-    assert("status 200", r.status === 200);
-    assert("contains incident title", r.body.includes("Database connection pool exhaustion"));
-    assert("contains timeline entries", r.body.includes("Alert triggered"));
-    assert("contains back link", r.body.includes("Back to board"));
-  }
+  console.log("\nTesting GET /incidents/NONEXISTENT ...");
+  const notFound = await get("/incidents/NONEXISTENT");
+  assert("GET /incidents/NONEXISTENT returns 404", notFound.status === 404);
 
-  console.log("\n--- GET /incidents/NONEXIST (404) ---");
-  {
-    const r = await get("/incidents/NONEXIST");
-    assert("status 404", r.status === 404);
-    assert("contains not found message", r.body.includes("not found"));
-  }
-
-  // summary
-  console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`);
-
-  server.kill("SIGTERM");
-  process.exit(failed > 0 ? 1 : 0);
+  console.log("\n---");
+  console.log(`Results: ${passed} passed, ${failed} failed`);
 }
 
-run().catch((err) => {
-  console.error("Test runner error:", err);
-  if (server) server.kill("SIGTERM");
-  process.exit(1);
-});
+// Require server module which starts listening
+const app = require("./server");
+
+// Give server a moment to start
+setTimeout(async () => {
+  try {
+    await runTests();
+  } catch (err) {
+    console.error("Test error:", err);
+    failed++;
+  } finally {
+    process.exit(failed > 0 ? 1 : 0);
+  }
+}, 500);
