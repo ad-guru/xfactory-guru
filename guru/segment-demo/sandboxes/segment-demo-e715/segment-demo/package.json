@@ -1,0 +1,12 @@
+{
+  "name": "segment-demo",
+  "version": "1.0.0",
+  "description": "Small Node.js HTTP service with motivational quotes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "license": "ISC"
+}
