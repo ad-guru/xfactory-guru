@@ -1,0 +1,12 @@
+{
+  "name": "push-offer-test",
+  "version": "1.0.0",
+  "description": "Tiny Node.js health service for testing the ready-to-push offer and merge workflow",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "license": "UNLICENSED"
+}
