@@ -1,0 +1,16 @@
+{
+  "name": "incident-board",
+  "version": "1.1.0",
+  "description": "Incident status board for on-call teams",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
