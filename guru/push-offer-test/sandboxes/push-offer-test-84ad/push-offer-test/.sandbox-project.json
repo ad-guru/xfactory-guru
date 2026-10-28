@@ -1,0 +1,9 @@
+{
+  "name": "push-offer-test",
+  "type": "app",
+  "start_command": ["sh", "-c", "node server.js"],
+  "auto_restart": true,
+  "env": {
+    "PORT": "3000"
+  }
+}
