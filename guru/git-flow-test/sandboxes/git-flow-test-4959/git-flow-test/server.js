@@ -21,6 +21,9 @@ app.get("/health", (_req, res) => {
 
 // GET /orders — server-rendered HTML table
 app.get("/orders", (_req, res) => {
+  const grandQty = orders.reduce((sum, o) => sum + o.qty, 0);
+  const grandTotal = orders.reduce((sum, o) => sum + o.total, 0);
+
   const rows = orders
     .map(
       (o) => `
@@ -61,6 +64,7 @@ app.get("/orders", (_req, res) => {
     th { background: #1a1a2e; color: #fff; font-weight: 600; }
     tr:nth-child(even) { background: #f0f1f4; }
     td:last-child { font-variant-numeric: tabular-nums; }
+    tfoot td { border-top: 2px solid #1a1a2e; background: #e8e9ed; }
   </style>
 </head>
 <body>
@@ -75,6 +79,13 @@ app.get("/orders", (_req, res) => {
       </tr>
     </thead>
     <tbody>${rows}</tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2"><strong>Grand Total</strong></td>
+        <td><strong>${grandQty}</strong></td>
+        <td><strong>${CURRENCY}${grandTotal.toLocaleString("en-IN")}</strong></td>
+      </tr>
+    </tfoot>
   </table>
 </body>
 </html>`;
