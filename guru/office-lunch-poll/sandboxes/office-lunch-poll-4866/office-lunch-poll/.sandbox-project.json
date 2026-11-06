@@ -1,0 +1,1 @@
+{"name":"office-lunch-poll","type":"app","start_command":["sh","-c","exec npm start"],"auto_restart":true,"env":{"PORT":"3000"}}
