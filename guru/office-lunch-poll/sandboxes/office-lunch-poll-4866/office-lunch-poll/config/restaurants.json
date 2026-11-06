@@ -1,0 +1,6 @@
+[
+  { "id": "taqueria", "name": "Taqueria Esquina", "tagline": "Tacos, burritos, extra salsa verde" },
+  { "id": "noodle-bar", "name": "Golden Noodle Bar", "tagline": "Ramen, dumplings, chili oil" },
+  { "id": "greens", "name": "Green Bowl", "tagline": "Salads, grain bowls, soups" },
+  { "id": "sushi-go", "name": "Sushi Go", "tagline": "Maki, nigiri, poke bowls" }
+]
