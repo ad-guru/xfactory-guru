@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --forest-primary: #2d6f57;
+  --forest-primary-light: #3d8b6d;
+  --forest-primary-dark: #255947;
+  --forest-surface: #f0f7f4;
+  --forest-accent: #5ea688;
+  --sage-text: #2e332e;
+  --sage-muted: #7f8a7f;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--forest-surface);
+  color: var(--sage-text);
+}
