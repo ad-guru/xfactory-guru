@@ -1,0 +1,9 @@
+{
+  "name": "simple-tip-calculator",
+  "type": "app",
+  "start_command": ["sh", "-c", "exec npm start"],
+  "auto_restart": true,
+  "env": {
+    "PORT": "3000"
+  }
+}
